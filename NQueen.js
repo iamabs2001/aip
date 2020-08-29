@@ -3,9 +3,12 @@ var n = 4;
 solveNQ();
 
 function printSolution(board){
-  for(var i=0; i<n; i++){
-    for(var j=0; j<n; j++){
-      process.stdout.write(" "+board[i][j]+" ");
+  for(var i=0; i<n; i++) {
+    for(var j=0; j<n; j++) {
+      var m = board[i][j]+"";
+      m = m.replace("1","Q");
+      m = m.replace("0","#");
+      process.stdout.write(" "+m+" ");
     }
     process.stdout.write("\n");
   }
