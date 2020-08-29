@@ -30,11 +30,11 @@ function place_next_queen(total, queens, columns) {
   columns = columns || [];
   for (let column = 0; column < total; column++) {
     columns.push(column);
-    if (!iskilling(columns) && place_next_queen(total, queens - 1, columns)) return columns
-    columns.pop(column)
+    if (!iskilling(columns) && place_next_queen(total, queens - 1, columns)) return columns;
+    columns.pop(column);
   }
-  return null
+  return null;
 }
 
 // run algorithm
-print_board(place_next_queen(4,4))
+print_board(place_next_queen(4,4));
