@@ -1,40 +1,80 @@
-// print the board using columns
-function print_board(columns) {
-  let n = columns.length, row = 0, col = 0;
-  while (row < n) {
-    while (col < n) {
-      process.stdout.write(columns[row] === col ? 'Q ' : '# ');
-      col++;
+var n = 4;
+
+solveNQ();
+
+function printSolution(board){
+  for(var i=0; i<n; i++) {
+    for(var j=0; j<n; j++) {
+      var m = board[i][j]+"";
+      m = m.replace("1","Q");
+      m = m.replace("0","#");
+      process.stdout.write(" "+m+" ");
     }
-    process.stdout.write('\n');
-    col = 0;
-    row++;
+    process.stdout.write("\n");
   }
+  process.stdout.write("\n");
 }
 
-// check if killing
-function iskilling(columns) {
-  let len = columns.length, last = columns[len - 1], previous = len - 2;
-  while (previous >= 0) {
-    if (columns[previous] === last) return true;
-    if (last - (len - 1) === columns[previous] - previous) return true;
-    if (last + (len - 1) === columns[previous] + previous) return true;
-    previous--;
+function isSafe(board, row, col){
+
+  // Checks the ← direction
+  for(var i=0; i<col; i++){
+    if (board[row][i] === 1) {
+      return false;
+    }
+  }
+
+  // Checks the ↖ direction 
+  for(var i=row, j=col; i>=0 && j>=0; i--, j--){
+    if (board[i][j] === 1) {
+      return false;
+    }
+  }
+
+  // Checks the ↙ direction 
+  for(var i=row, j=col; j>=0 && i<n; i++, j--){
+    if (board[i][j] === 1){
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+function recurseNQ(board, col){
+  if(col===n){
+      printSolution(board); // <-- print another solution when n==8
+    return;  
+  }
+
+  for(var i=0; i<n; i++){
+    if(isSafe(board, i, col)){
+      board[i][col]=1;
+
+      recurseNQ(board, col+1);
+      //if(recurseNQ(board, col+1)===true) //<-- you don't need this
+          // return true;
+
+      board[i][col]=0;
+    }
   }
   return false;
 }
 
-// put next queen only if she does not kill other
-function place_next_queen(total, queens, columns) {
-  if (queens === 0) return columns;
-  columns = columns || [];
-  for (let column = 0; column < total; column++) {
-    columns.push(column);
-    if (!iskilling(columns) && place_next_queen(total, queens - 1, columns)) return columns;
-    columns.pop(column);
-  }
-  return null;
+
+function solveNQ(){
+  var board = generateBoard(n);
+  recurseNQ(board, 0);
 }
 
-// run algorithm
-print_board(place_next_queen(4,4));
+function generateBoard(n){
+  var board=[];
+  for(var i=0; i<n; i++){
+    board[i]=[];
+    for(var j=0; j<n; j++){
+      board[i][j]=0;
+    }
+  }
+  return board;
+}
